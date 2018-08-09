@@ -1,4 +1,7 @@
+/*
 package week1.db;
+
+import week1.model.User;
 
 import java.sql.*;
 
@@ -14,7 +17,7 @@ public class _01IntroJdbc {
         try {
             connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/ACP11", "root", "pass1");
             statement = connection.createStatement();
-            statement.executeUpdate("INSERT INFO users (id,name,phone, salary) VALUES 1, 'Olag', '+234', 2.00");
+            statement.executeUpdate("INSERT INFO users (id,name,phone, salary) VALUES 1, 'Olag', '+234', 2.00   ");
             resultSet = statement.executeQuery("SELECT id,name,phone, salary");
             while(resultSet.next()){
                 int id = resultSet.getInt("id");
@@ -55,3 +58,4 @@ public class _01IntroJdbc {
         }
     }
 }
+*/

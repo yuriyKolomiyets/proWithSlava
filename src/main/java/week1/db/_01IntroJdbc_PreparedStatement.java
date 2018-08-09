@@ -1,11 +1,14 @@
+/*
 package week1.db;
+
+import week1.model.User;
 
 import java.sql.*;
 
 public class _01IntroJdbc_PreparedStatement {
-    public static final String URL = "jdbc:mysql://localhost:3306/ACP11";
+    public static final String URL = "jdbc:mysql://localhost:3306/TEST1";
     public static final String USER = "root";
-    public static final String PASSWORD = "";
+    public static final String PASSWORD = "asusual1";
     public static final String ALL_USERS_QUERY = "SELECT id,name,amount,birth,phone FROM users";
 
     public static void main(String[] args) throws ClassNotFoundException {
@@ -37,3 +40,4 @@ public class _01IntroJdbc_PreparedStatement {
     }
 
 }
+*/
