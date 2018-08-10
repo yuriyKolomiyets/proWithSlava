@@ -6,7 +6,7 @@ public class User {
    private String first_name;
    private String last_name;
    private int age;
-   private int  address_id;
+   private int address_id;
 
     public User() {
     }
