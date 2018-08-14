@@ -6,17 +6,17 @@ public class User {
    private String first_name;
    private String last_name;
    private int age;
-   private int address_id;
+   private Address address;
 
     public User() {
     }
 
-    public User(int id, String first_name, String last_name, int age, int address_id) {
+    public User(int id, String first_name, String last_name, int age, Address address) {
         this.id = id;
         this.first_name = first_name;
         this.last_name = last_name;
         this.age = age;
-        this.address_id = address_id;
+        this.address = address;
     }
 
     public int getId() {
@@ -51,22 +51,11 @@ public class User {
         this.age = age;
     }
 
-    public int getAddress_id() {
-        return address_id;
+    public Address getAddress() {
+        return address;
     }
 
-    public void setAddress_id(int address_id) {
-        this.address_id = address_id;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", first_name='" + first_name + '\'' +
-                ", last_name='" + last_name + '\'' +
-                ", age=" + age +
-                ", address_id=" + address_id +
-                '}';
+    public void setAddress(Address address) {
+        this.address = address;
     }
 }
