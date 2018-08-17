@@ -28,11 +28,12 @@ public class DbExecute {
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
 
             preparedStatement = connection.prepareStatement
-                    ("INSERT INTO address(city,street, house) VALUES (?,?,?)");
+                    ("INSERT INTO address(id, city,street, house) VALUES (?, ?,?,?)");
 
-            preparedStatement.setString(1, user.getAddress().getCity());
-            preparedStatement.setString(2, user.getAddress().getStreet());
-            preparedStatement.setInt(3, user.getAddress().getHouse());
+            preparedStatement.setInt(1, user.getAddress().getId());
+            preparedStatement.setString(2, user.getAddress().getCity());
+            preparedStatement.setString(3, user.getAddress().getStreet());
+            preparedStatement.setInt(4, user.getAddress().getHouse());
 
             System.out.println(preparedStatement.execute() + "INSERT INTO address");
 
