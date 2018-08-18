@@ -2,15 +2,15 @@ package week1.db;
 
 import week1.model.Address;
 import week1.model.User;
+import week1.utils.PathUtils;
 
 import java.sql.*;
 
 public class DbExecute {
 
-    public static final String URL =
-            "jdbc:mysql://localhost/TEST2?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&useSSL=false&serverTimezone=UTC";
-    public static final String USER = "root";
-    public static final String PASSWORD = "";
+    public static final String URL = PathUtils.getDbPath();
+    public static final String USER = PathUtils.getDbLogin();
+    public static final String PASSWORD = PathUtils.getDbPass();
     private static int addressId;
 
     public static void main(String[] args) throws ClassNotFoundException {

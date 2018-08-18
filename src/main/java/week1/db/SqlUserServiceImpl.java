@@ -2,28 +2,28 @@ package week1.db;
 
 import week1.model.Address;
 import week1.model.User;
+import week1.utils.PathUtils;
 
 import java.sql.*;
 
 public class SqlUserServiceImpl implements SqlUserService {
 
-    //todo replace it to the resources
-    private static final String URL = "jdbc:mysql://localhost/TEST2?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&useSSL=false&serverTimezone=UTC";
-    private static final String USER = "root";
-    private static final String PASSWORD = "";
+    public static final String URL = PathUtils.getDbPath();
+    public static final String USER = PathUtils.getDbLogin();
+    public static final String PASSWORD = PathUtils.getDbPass();
+    private Connection connection;
+
     private User user;
     private PreparedStatement preparedStatement;
     private Statement statement;
-
-    //todo ﻿no need to open connection every time, you may reuse the same one opened in constructor for example.
-    //todo ﻿ try to extract connection from methods to the property (class level), otherwise it will be hard to write unit tests.
+    public SqlUserServiceImpl() throws SQLException {
+        Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+    }
 
     @Override
-    public User create(String firstName, String lastName, int age, Address address) {
+    public User create(String firstName, String lastName, int age, Address address) throws SQLException {
 
         int id = findMaxUserId() + 1;
-
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
 
             user = new User(id, firstName, lastName, age, address);
             preparedStatement = connection.prepareStatement
@@ -34,18 +34,14 @@ public class SqlUserServiceImpl implements SqlUserService {
             preparedStatement.setInt(4, setAddressId());
 
             preparedStatement.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
         return user;
     }
 
     @Override
-    public User findByFistNameAndLastName(String firstName, String lastName) {
+    public User findByFistNameAndLastName(String firstName, String lastName) throws SQLException {
 
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
-
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM users WHERE first_name IS ? AND last_name IS ?");
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM users WHERE first_name IS ? AND last_name IS ?");
             preparedStatement.setString(1, firstName);
             preparedStatement.setString(2, lastName);
 
@@ -54,10 +50,6 @@ public class SqlUserServiceImpl implements SqlUserService {
             while (resultSet.next()) {
                 //todo write logic how to get user from set
             }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
         return user;
     }
@@ -72,9 +64,7 @@ public class SqlUserServiceImpl implements SqlUserService {
     }
 
     @Override
-    public void delete(Integer userId) {
-
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
+    public void delete(Integer userId) throws SQLException {
 
             preparedStatement = connection.prepareStatement
                     ("DELETE INTO users WHERE id IS ?");
@@ -82,10 +72,6 @@ public class SqlUserServiceImpl implements SqlUserService {
             preparedStatement.setInt(1, userId);
             preparedStatement.execute();
 
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
     }
 
@@ -101,11 +87,9 @@ public class SqlUserServiceImpl implements SqlUserService {
         return id;
     }
 
-    private void addNewAddressToDB(String city, String street, int house) {
+    private void addNewAddressToDB(String city, String street, int house) throws SQLException {
 
         int id = findMaxAddressId() + 1;
-
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
 
             preparedStatement = connection.prepareStatement
                     ("INSERT INTO address(id, city, street, house) VALUES (?, ?,?,?)");
@@ -117,9 +101,6 @@ public class SqlUserServiceImpl implements SqlUserService {
 
             preparedStatement.execute();
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
     private int findAddressId() {
