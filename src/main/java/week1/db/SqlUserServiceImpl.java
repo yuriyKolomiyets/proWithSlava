@@ -238,5 +238,6 @@ public class SqlUserServiceImpl implements SqlUserService {
             maxUserId = resultSet.getInt("id");
         }
         return maxUserId;
+
     }
 }
