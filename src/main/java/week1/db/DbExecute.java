@@ -2,15 +2,15 @@ package week1.db;
 
 import week1.model.Address;
 import week1.model.User;
+import week1.utils.PathUtils;
 
 import java.sql.*;
 
 public class DbExecute {
 
-    public static final String URL =
-            "jdbc:mysql://localhost/TEST2?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&useSSL=false&serverTimezone=UTC";
-    public static final String USER = "root";
-    public static final String PASSWORD = "";
+    public static final String URL = PathUtils.getDbPath();
+    public static final String USER = PathUtils.getDbLogin();
+    public static final String PASSWORD = PathUtils.getDbPass();
     private static int addressId;
 
     public static void main(String[] args) throws ClassNotFoundException {
@@ -28,11 +28,12 @@ public class DbExecute {
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
 
             preparedStatement = connection.prepareStatement
-                    ("INSERT INTO address(city,street, house) VALUES (?,?,?)");
+                    ("INSERT INTO address(id, city,street, house) VALUES (?, ?,?,?)");
 
-            preparedStatement.setString(1, user.getAddress().getCity());
-            preparedStatement.setString(2, user.getAddress().getStreet());
-            preparedStatement.setInt(3, user.getAddress().getHouse());
+            preparedStatement.setInt(1, user.getAddress().getId());
+            preparedStatement.setString(2, user.getAddress().getCity());
+            preparedStatement.setString(3, user.getAddress().getStreet());
+            preparedStatement.setInt(4, user.getAddress().getHouse());
 
             System.out.println(preparedStatement.execute() + "INSERT INTO address");
 
@@ -69,7 +70,7 @@ public class DbExecute {
         Statement statement1 = null;
         int maxId = 0;
 
-        ResultSet resultSet1 = statement1.executeQuery("SELECT id FROM users WHERE ");
+        ResultSet resultSet1 = statement1.executeQuery("SELECT id FROM usersadd ");
 
         if (resultSet1 != null){
 
