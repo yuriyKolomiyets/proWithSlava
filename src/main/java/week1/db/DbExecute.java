@@ -70,7 +70,7 @@ public class DbExecute {
         Statement statement1 = null;
         int maxId = 0;
 
-        ResultSet resultSet1 = statement1.executeQuery("SELECT id FROM users WHERE ");
+        ResultSet resultSet1 = statement1.executeQuery("SELECT id FROM usersadd ");
 
         if (resultSet1 != null){
 

@@ -7,7 +7,7 @@ public class Address {
     private String street;
     private int house;
 
-    public Address() {
+    public Address(Address address_id) {
     }
 
     public Address(int id, String city, String street, int house) {
@@ -15,6 +15,9 @@ public class Address {
         this.city = city;
         this.street = street;
         this.house = house;
+    }
+
+    public Address() {
     }
 
     public int getId() {
