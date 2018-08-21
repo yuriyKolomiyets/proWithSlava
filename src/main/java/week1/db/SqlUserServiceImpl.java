@@ -33,7 +33,7 @@ public class SqlUserServiceImpl implements SqlUserService {
         preparedStatement.setString(1, user.getFirst_name());
         preparedStatement.setString(2, user.getLast_name());
         preparedStatement.setInt(3, user.getAge());
-        preparedStatement.setInt(4, setAddressId(address.getCity(), address.getStreet(), address.getHouse()));
+        preparedStatement.setInt(4, getAddressId(address.getCity(), address.getStreet(), address.getHouse()));
 
         preparedStatement.execute();
 
@@ -92,6 +92,9 @@ public class SqlUserServiceImpl implements SqlUserService {
         PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
         preparedStatement.setInt(1, newAddress.getId());
         preparedStatement.setInt(2, userId);
+
+        preparedStatement.execute();
+        
     }
 
     private User getUserById(Integer userId) throws SQLException {
@@ -153,7 +156,7 @@ public class SqlUserServiceImpl implements SqlUserService {
         return address;
     }
 
-    private int setAddressId(String city, String street, int house) throws SQLException {
+    private int getAddressId(String city, String street, int house) throws SQLException {
 
         int id;
 
