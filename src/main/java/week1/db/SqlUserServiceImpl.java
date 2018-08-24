@@ -97,7 +97,7 @@ public class SqlUserServiceImpl implements SqlUserService {
         
     }
 
-    private User getUserById(Integer userId) throws SQLException {
+    public User getUserById(Integer userId) throws SQLException {
 
         User user = new User();
 
