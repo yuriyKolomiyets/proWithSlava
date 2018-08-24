@@ -3,15 +3,14 @@ package week1.tests;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import week1.db.SqlUserService;
 import week1.db.SqlUserServiceImpl;
 import week1.model.Address;
 import week1.model.User;
 
 import java.sql.*;
+import java.util.List;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 
 public class TestSqlUserService {
@@ -35,7 +34,6 @@ public class TestSqlUserService {
     }
 
     @Before
-
     public void before() throws ClassNotFoundException, SQLException {
 
         conn = DriverManager.getConnection(DB_URL, USER, PASS);
@@ -81,11 +79,15 @@ public class TestSqlUserService {
         assertTrue(ret.getAge() == 30);
     }
 
+    @Test
     public void deleteUser() throws SQLException {
 
         String selectSQL = "SELECT * FROM users WHERE last_name = Kuznetsov";
         PreparedStatement preparedStatement = conn.prepareStatement(selectSQL);
         ResultSet resultSet = preparedStatement.executeQuery(selectSQL);
+
+
+        assertFalse(!resultSet.next());
 
         int id = 0;
         while (resultSet.next()){
@@ -93,11 +95,38 @@ public class TestSqlUserService {
         }
 
         sqlUserService.delete(id);
-
         assertNull(sqlUserService.getUserById(id));
 
     }
 
+    @Test
+    public void testChangeAddress() throws SQLException {
 
+        String selectSQL = "SELECT * FROM users WHERE last_name = Kuznetsov";
+        PreparedStatement preparedStatement = conn.prepareStatement(selectSQL);
+        ResultSet resultSet = preparedStatement.executeQuery(selectSQL);
+
+        int userId = 0;
+        while (resultSet.next()) {
+            userId = resultSet.getInt("id");
+        }
+
+        Address newAddress = new Address(2, "Lviv", "Somestreet", 5);
+        User ret = sqlUserService.changeAddress(userId, newAddress);
+
+        assertEquals(ret.getAddress().getCity(), "Lviv");
+        assertEquals(ret.getAddress().getHouse(), 5);
+
+    }
+
+    @Test
+    public void findByFistNameAndLastName() throws SQLException {
+
+        List<User> ret = sqlUserService.findByFistNameAndLastName("Oleg", "Kuznetsov");
+
+        assertTrue(ret.size() == 1);
+        assertTrue(ret.get(0).getFirst_name().equals("Oleg"));
+
+    }
 }
 
