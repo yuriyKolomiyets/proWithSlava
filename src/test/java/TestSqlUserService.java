@@ -1,5 +1,3 @@
-package week1.tests;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,12 +23,8 @@ public class TestSqlUserService {
     Statement stmt = null;
     SqlUserServiceImpl sqlUserService;
 
-    {
-        try {
-            sqlUserService = new SqlUserServiceImpl();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
+    public TestSqlUserService() throws SQLException {
     }
 
     @Before
@@ -38,6 +32,14 @@ public class TestSqlUserService {
 
         conn = DriverManager.getConnection(DB_URL, USER, PASS);
         Class.forName("org.h2.Driver");
+
+        {
+            try {
+                sqlUserService = new SqlUserServiceImpl(conn);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
 
         Statement st = conn.createStatement();
 
@@ -62,8 +64,12 @@ public class TestSqlUserService {
 
     @After
     public void after() throws SQLException {
+        stmt.execute("DROP TABLE users");
+        stmt.execute("DROP TABLE address");
+
         if (stmt != null) stmt.close();
         if (conn != null) conn.close();
+
 
     }
 
@@ -82,29 +88,27 @@ public class TestSqlUserService {
     @Test
     public void deleteUser() throws SQLException {
 
-        String selectSQL = "SELECT * FROM users WHERE last_name = Kuznetsov";
+        String selectSQL = "SELECT * FROM users WHERE last_name = 'Kuznetsov'";
         PreparedStatement preparedStatement = conn.prepareStatement(selectSQL);
-        ResultSet resultSet = preparedStatement.executeQuery(selectSQL);
+        ResultSet resultSet = preparedStatement.executeQuery();
 
 
-        assertFalse(!resultSet.next());
-
-        int id = 0;
+        int userId = 0;
         while (resultSet.next()){
-            id = resultSet.getInt("id");
+            userId = resultSet.getInt("id");
         }
 
-        sqlUserService.delete(id);
-        assertNull(sqlUserService.getUserById(id));
+        sqlUserService.delete(userId);
+        assertNull(sqlUserService.getUserById(userId));
 
     }
 
     @Test
     public void testChangeAddress() throws SQLException {
 
-        String selectSQL = "SELECT * FROM users WHERE last_name = Kuznetsov";
+        String selectSQL = "SELECT * FROM users WHERE last_name = 'Kuznetsov'";
         PreparedStatement preparedStatement = conn.prepareStatement(selectSQL);
-        ResultSet resultSet = preparedStatement.executeQuery(selectSQL);
+        ResultSet resultSet = preparedStatement.executeQuery();
 
         int userId = 0;
         while (resultSet.next()) {
