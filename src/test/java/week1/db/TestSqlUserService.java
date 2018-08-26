@@ -14,14 +14,13 @@ import static org.junit.Assert.*;
 
 public class TestSqlUserService {
 
-    static final String DB_URL = "jdbc:h2:~/test";
-    static final String USER = "sa";
-    static final String PASS = "";
+    private static final String DB_URL = "jdbc:h2:~/test";
+    private static final String USER = "sa";
+    private static final String PASS = "";
 
-    Connection conn = null;
-    Statement stmt = null;
-    SqlUserServiceImpl sqlUserService;
-
+    private Connection conn = null;
+    private Statement stmt = null;
+    private SqlUserServiceImpl sqlUserService;
 
     public TestSqlUserService() throws SQLException {
     }
