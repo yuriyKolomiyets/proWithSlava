@@ -12,7 +12,6 @@ public class PathUtils {
     public static String getDbPath() {
 
         loadProperty(pathToProps);
-
         return appProperties.getProperty("pathToDb");
     }
 

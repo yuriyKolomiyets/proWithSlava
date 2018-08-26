@@ -2,7 +2,6 @@ package week1.db;
 
 import week1.model.Address;
 import week1.model.User;
-import week1.utils.PathUtils;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -86,7 +85,6 @@ public class SqlUserServiceImpl implements SqlUserService {
 
         preparedStatement.setInt(1, userId);
         preparedStatement.execute();
-
     }
 
     private void changeAddressId(Integer userId, Address newAddress) throws SQLException {
@@ -97,7 +95,6 @@ public class SqlUserServiceImpl implements SqlUserService {
         preparedStatement.setInt(2, userId);
 
         preparedStatement.execute();
-        
     }
 
     public User getUserById(Integer userId) throws SQLException {
@@ -121,7 +118,6 @@ public class SqlUserServiceImpl implements SqlUserService {
                user.setAge(resultSet.getInt("age"));
                user.setAddress(getAddressById(resultSet.getInt("address_id")));
            }
-
            return user;
        }
     }
@@ -160,7 +156,6 @@ public class SqlUserServiceImpl implements SqlUserService {
             address.setStreet(resultSet.getString("street"));
             address.setHouse(resultSet.getInt("house"));
         }
-
         return address;
     }
 
@@ -190,7 +185,6 @@ public class SqlUserServiceImpl implements SqlUserService {
         while (resultSet.next()) {
             id = resultSet.getInt("id");
         }
-
         return id;
     }
 
@@ -207,9 +201,7 @@ public class SqlUserServiceImpl implements SqlUserService {
         preparedStatement.setInt(4, house);
 
         preparedStatement.execute();
-
     }
-
 
     private boolean addressPresentInDb(String city, String street, int house) throws SQLException {
 
@@ -246,6 +238,5 @@ public class SqlUserServiceImpl implements SqlUserService {
             maxUserId = resultSet.getInt(1);
         }
         return maxUserId;
-
     }
 }

@@ -1,7 +1,8 @@
+package week1.db;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import week1.db.SqlUserServiceImpl;
 import week1.model.Address;
 import week1.model.User;
 
@@ -33,15 +34,7 @@ public class TestSqlUserService {
         conn = DriverManager.getConnection(DB_URL, USER, PASS);
         Class.forName("org.h2.Driver");
 
-        {
-            try {
-                sqlUserService = new SqlUserServiceImpl(conn);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
-        Statement st = conn.createStatement();
+        sqlUserService = new SqlUserServiceImpl(conn);
 
         stmt = conn.createStatement();
 
