@@ -2,7 +2,6 @@ package week1.db;
 
 import week1.model.Address;
 import week1.model.User;
-import week1.utils.PathUtils;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -10,16 +9,14 @@ import java.util.List;
 
 public class SqlUserServiceImpl implements SqlUserService {
 
-    public static final String URL = PathUtils.getDbPath();
-    public static final String USER = PathUtils.getDbLogin();
-    public static final String PASSWORD = PathUtils.getDbPass();
     private Connection connection;
 
     private PreparedStatement preparedStatement;
     private Statement statement;
 
-    public SqlUserServiceImpl() throws SQLException {
-        Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+    public SqlUserServiceImpl(Connection connection) throws SQLException {
+        this.connection = connection;
+        statement = connection.createStatement();
     }
 
     @Override
@@ -28,8 +25,13 @@ public class SqlUserServiceImpl implements SqlUserService {
         int id = findMaxUserId() + 1;
 
         User user = new User(id, firstName, lastName, age, address);
+
+        if (!addressPresentInDb(address.getCity(), address.getStreet(), address.getHouse())){
+            addNewAddressToDB(address.getCity(), address.getStreet(), address.getHouse());
+        }
+
         preparedStatement = connection.prepareStatement
-                ("INSERT INTO users(first_name, last_name, age, adress_id) VALUES (?,?,?,?)");
+                ("INSERT INTO users(first_name, last_name, age, address_id) VALUES (?,?,?,?)");
         preparedStatement.setString(1, user.getFirst_name());
         preparedStatement.setString(2, user.getLast_name());
         preparedStatement.setInt(3, user.getAge());
@@ -47,7 +49,7 @@ public class SqlUserServiceImpl implements SqlUserService {
         PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
         preparedStatement.setString(1, firstName);
         preparedStatement.setString(2, lastName);
-        ResultSet resultSet = preparedStatement.executeQuery(selectSQL);
+        ResultSet resultSet = preparedStatement.executeQuery();
 
         return createUserListFromSet(resultSet);
     }
@@ -83,7 +85,6 @@ public class SqlUserServiceImpl implements SqlUserService {
 
         preparedStatement.setInt(1, userId);
         preparedStatement.execute();
-
     }
 
     private void changeAddressId(Integer userId, Address newAddress) throws SQLException {
@@ -94,28 +95,31 @@ public class SqlUserServiceImpl implements SqlUserService {
         preparedStatement.setInt(2, userId);
 
         preparedStatement.execute();
-        
     }
 
-    private User getUserById(Integer userId) throws SQLException {
+    public User getUserById(Integer userId) throws SQLException {
 
         User user = new User();
 
         String selectSQL = "SELECT * FROM users WHERE id =  ?";
         PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
         preparedStatement.setInt(1, userId);
-        ResultSet resultSet = preparedStatement.executeQuery(selectSQL);
+        ResultSet resultSet = preparedStatement.executeQuery();
 
-        while (resultSet.next()) {
+       if (!resultSet.isBeforeFirst()){
+           return null;
+       } else {
 
-            user.setId(resultSet.getInt("id"));
-            user.setFirst_name(resultSet.getString("first_name"));
-            user.setLast_name(resultSet.getString("last_name"));
-            user.setAge(resultSet.getInt("age"));
-            user.setAddress(getAddressById(resultSet.getInt("address_id")));
-        }
+           while (resultSet.next()) {
 
-        return user;
+               user.setId(resultSet.getInt("id"));
+               user.setFirst_name(resultSet.getString("first_name"));
+               user.setLast_name(resultSet.getString("last_name"));
+               user.setAge(resultSet.getInt("age"));
+               user.setAddress(getAddressById(resultSet.getInt("address_id")));
+           }
+           return user;
+       }
     }
 
     private List<User> createUserListFromSet(ResultSet resultSet) throws SQLException {
@@ -140,10 +144,10 @@ public class SqlUserServiceImpl implements SqlUserService {
 
         Address address = new Address();
 
-        String selectSQL = "SELECT * FROM address WHERE address_id =  ?";
+        String selectSQL = "SELECT * FROM address WHERE id =  ?";
         PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
         preparedStatement.setInt(1, address_id);
-        ResultSet resultSet = preparedStatement.executeQuery(selectSQL);
+        ResultSet resultSet = preparedStatement.executeQuery();
 
         while (resultSet.next()) {
 
@@ -152,7 +156,6 @@ public class SqlUserServiceImpl implements SqlUserService {
             address.setStreet(resultSet.getString("street"));
             address.setHouse(resultSet.getInt("house"));
         }
-
         return address;
     }
 
@@ -172,17 +175,16 @@ public class SqlUserServiceImpl implements SqlUserService {
 
         int id = 0;
 
-        String selectSQL = "SELECT address_id FROM address WHERE city = ? AND street = ? AND house =  ?";
+        String selectSQL = "SELECT id FROM address WHERE city = ? AND street = ? AND house =  ?";
         PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
         preparedStatement.setString(1, city);
         preparedStatement.setString(2, street);
         preparedStatement.setInt(3, house);
-        ResultSet resultSet = preparedStatement.executeQuery(selectSQL);
+        ResultSet resultSet = preparedStatement.executeQuery();
 
         while (resultSet.next()) {
-            id = resultSet.getInt("address_id");
+            id = resultSet.getInt("id");
         }
-
         return id;
     }
 
@@ -199,9 +201,7 @@ public class SqlUserServiceImpl implements SqlUserService {
         preparedStatement.setInt(4, house);
 
         preparedStatement.execute();
-
     }
-
 
     private boolean addressPresentInDb(String city, String street, int house) throws SQLException {
 
@@ -210,7 +210,7 @@ public class SqlUserServiceImpl implements SqlUserService {
         preparedStatement.setString(1, city);
         preparedStatement.setString(2, street);
         preparedStatement.setInt(3, house);
-        ResultSet resultSet = preparedStatement.executeQuery(selectSQL);
+        ResultSet resultSet = preparedStatement.executeQuery();
 
         if(!resultSet.next()){
             return false;
@@ -224,7 +224,7 @@ public class SqlUserServiceImpl implements SqlUserService {
 
         ResultSet resultSet = statement.executeQuery("SELECT max (id) FROM address ");
         while (resultSet.next()) {
-            maxAddressId = resultSet.getInt("id");
+            maxAddressId = resultSet.getInt(1);
         }
         return maxAddressId;
     }
@@ -235,7 +235,7 @@ public class SqlUserServiceImpl implements SqlUserService {
 
         ResultSet resultSet = statement.executeQuery("SELECT max (id) FROM users");
         while (resultSet.next()) {
-            maxUserId = resultSet.getInt("id");
+            maxUserId = resultSet.getInt(1);
         }
         return maxUserId;
     }

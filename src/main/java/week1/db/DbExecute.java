@@ -3,7 +3,6 @@ package week1.db;
 import week1.model.Address;
 import week1.model.User;
 import week1.utils.PathUtils;
-
 import java.sql.*;
 
 public class DbExecute {
@@ -73,13 +72,11 @@ public class DbExecute {
         ResultSet resultSet1 = statement1.executeQuery("SELECT id FROM usersadd ");
 
         if (resultSet1 != null){
-
             addressId = 0;
 
         } else {
             addressId=maxId++;
         }
-
         return addressId;
     }
 }

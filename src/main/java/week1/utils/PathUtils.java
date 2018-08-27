@@ -7,12 +7,11 @@ import java.util.Properties;
 
 public class PathUtils {
     private static Properties appProperties = new Properties();
-    private static String pathToProps = "src/main/java/app.properties";
+    private static String pathToProps = "src/main/resources/app.properties";
 
     public static String getDbPath() {
 
         loadProperty(pathToProps);
-
         return appProperties.getProperty("pathToDb");
     }
 
